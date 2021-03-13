@@ -1,0 +1,15 @@
+.ShowProducts .Card {
+  border: 1px solid black;
+  margin: 20px;
+  text-align: center;
+}
+
+.ShowProducts .Card img {
+  width: 400px;
+  height: 400px;
+}
+
+.ShowProducts .LoadMore {
+  padding: 10px;
+  margin: 10px 20px;
+}
