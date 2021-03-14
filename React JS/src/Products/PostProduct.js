@@ -17,7 +17,7 @@ const PostProduct = ({ history }) => {
       DescriptionState: DescriptionState.trim(),
     };
 
-    axios.post("http://localhost:4000/postProducts", Data).then((result) => {
+    axios.post(process.env.REACT_APP_POSTPRODUCTS_URL, Data).then((result) => {
       if (result.data.response === "Product Saved Successfully") {
         history.push("/");
       }

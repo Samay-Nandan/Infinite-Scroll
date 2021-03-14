@@ -9,6 +9,7 @@ import RootReducer from "../src/Store/Reducer/RootReducer";
 import { Provider } from "react-redux";
 import thunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
+require("dotenv").config();
 
 const Store = createStore(
   RootReducer,

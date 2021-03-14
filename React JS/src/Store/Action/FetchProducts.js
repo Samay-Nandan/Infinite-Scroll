@@ -4,7 +4,7 @@ export const fetchProducts = (Page, Limit) => {
   return (dispatch) => {
     dispatch(fetchProductsRequest());
     axios
-      .get("http://localhost:4000/getProducts/" + Page + "/" + Limit)
+      .get(process.env.REACT_APP_GETPRODUCTS_URL + "/" + Page + "/" + Limit)
       .then((response) => {
         dispatch(fetchProductsSuccess(response.data));
       })
