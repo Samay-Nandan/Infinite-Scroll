@@ -1,35 +1,57 @@
 const ProductModel = require("../Model/Products");
 
+const handleErrors = (err) => {
+  const Errors = {
+    Title: "No Error",
+    Image: "No Error",
+  };
+
+  const { Title, Image } = err.errors;
+
+  if (err.message.includes("Product validation failed")) {
+    Object.values(err.errors).forEach(({ properties }) => {
+      Errors[properties.path] = properties.message;
+    });
+  }
+
+  return Errors;
+};
+
 exports.getProducts = async (req, res, next) => {
   //(page - 1 ) * Limit
 
-  const ProductsInDatabase = await ProductModel.find()
-    .skip((+req.params.page - 1) * +req.params.limit)
-    .limit(+req.params.limit);
-  const TotalNumberOfDocuments = await ProductModel.find().countDocuments();
-  return res.json({
-    response: ProductsInDatabase,
-    TotalNumber: TotalNumberOfDocuments,
-  });
+  try {
+    const ProductsInDatabase = await ProductModel.find()
+      .skip((+req.params.page - 1) * +req.params.limit)
+      .limit(+req.params.limit);
+
+    const TotalNumberOfDocuments = await ProductModel.find().countDocuments();
+
+    return res.status(200).json({
+      response: ProductsInDatabase,
+      TotalNumber: TotalNumberOfDocuments,
+    });
+  } catch (err) {
+    const errors = handleErrors(err);
+    res.status(400).json({ errors });
+  }
 };
 
 exports.postProduct = async (req, res, next) => {
-  if (
-    Object.entries(req.body).length === 0 ||
-    Object.entries(req.body.title).length === 0 ||
-    Object.entries(req.body.image).length === 0
-  ) {
-    return res.json({ response: "Please Provide title, image" });
-  }
+  const { title, image, DescriptionState } = req.body;
 
   const newProduct = new ProductModel({
-    Title: req.body.title,
-    Image: req.body.image,
-    Description: req.body.DescriptionState,
+    Title: title,
+    Image: image,
+    Description: DescriptionState,
   });
 
-  const SavingProduct = await newProduct.save();
-  if (SavingProduct) {
-    res.json({ response: "Product Saved Successfully" });
+  try {
+    const SavingProduct = await newProduct.save();
+
+    res.status(200).json({ response: "Product Saved Successfully" });
+  } catch (err) {
+    const errors = handleErrors(err);
+    res.status(400).json({ errors });
   }
 };
